@@ -11,14 +11,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f274feacdf50f34448f4adc0eb518dcd, type: 3}
   m_Name: terrain
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
-  depth: 25
-  mountainHeight: 5
-  detailHeight: 5
-  S: 20
-  mountainScale: 5
-  detailScale: 5
+  noiseSettings:
+    width: 199
+    height: 200
+    depth: 105
+    mountainHeight: 17
+    detailHeight: 44
+    scale: 9.73
+    mountainScale: 5
+    center: {x: -1.71, y: 1.17}
+    numLayers: 8
+    baseRoughness: 0.083
+    roughness: 2.21
+    strength: 6.7
+    persistence: 0.5
+  noiseLayers:
+  - enabled: 1
+    noiseSettings:
+      width: 102
+      height: 97
+      depth: 110
+      mountainHeight: 0
+      detailHeight: 0
+      scale: 0
+      mountainScale: 0
+      center: {x: 21.15, y: -12.12}
+      numLayers: 6
+      baseRoughness: 0.02
+      roughness: 1.3
+      strength: 49.07
+      persistence: 0.5
+  - enabled: 1
+    noiseSettings:
+      width: 0
+      height: 0
+      depth: 0
+      mountainHeight: 0
+      detailHeight: 0
+      scale: 0.24
+      mountainScale: 0
+      center: {x: 0, y: 0}
+      numLayers: 4
+      baseRoughness: 0.064
+      roughness: 2.1
+      strength: 8.12
+      persistence: 0.45
   mountainZone: 0.5
   grassZone: 0.2
   sandZone: 0
