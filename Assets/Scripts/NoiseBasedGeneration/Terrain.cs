@@ -15,16 +15,17 @@ using UnityEngine;
 
 public class Terrain : MonoBehaviour {
 
-	public float mountainZone = 0.7f, grassZone = 0.2f, sandZone = 0f;
-
-	[Range(32,256)]
-	public int resolution = 100;
+	[Range(1,50)]
+	public int pointDensity = 10;
+	[Range(1, 20)]
+	public int terrainSize = 3;
 	public bool autoUpdate = true;
 	public MinMax elevationMinMax;
 
 	public ColorSettings colorSettings;
 	public TerrainSettings terrainSettings;
 
+	// Used for editor scripting
 	[HideInInspector]
 	public bool terrainSettingsFoldout;
 	[HideInInspector]
@@ -62,40 +63,37 @@ public class Terrain : MonoBehaviour {
 	}
 
 	public void ConstructMesh(){
+		int resolution = pointDensity * terrainSize;
 		Vector3[] verticies = new Vector3[resolution*resolution];
+		Debug.Log("Num Vertices = " + (resolution * resolution));
 		int[] triangles = new int[(resolution-1) * (resolution-1) * 6];
+		Debug.Log("Num Triangles = " + ((resolution - 1) * (resolution - 1) * 6));
 		int triIndex = 0;
 
 		mesh = meshFilter.sharedMesh;
+		// set indexFormat from 16bit to 32bit so that we can have a more detailed mesh
+		meshFilter.sharedMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-		// TODO: Resolution should actually change resolution and not "zoom in"!!!!
 		for ( int y = 0; y < resolution; y++ ) {
 			for ( int x = 0; x < resolution; x++ ) {
+				// (x,y) / pointDensity = game coordinate 
+				Vector2 point = new Vector2(x, y) / (float)pointDensity;
 
-				// TODO: Go through this section and refactor to work with new variables.
-				// things like detailHeight and depth shouldn't be used any more. 
-				// Also, we shouldn't have to do any more calculations on noiseVal here,
-				// that should all be done by the time we get it from TerrainGenerator
-				float noiseVal = terrainGenerator.CalculatePointOnPlanet(new Vector3(x, y));
-				float h = noiseVal;
+				// noiseVal is the height value at our coordinate
+				float noiseVal = terrainGenerator.CalculatePointOnPlanet(point);
+				elevationMinMax.AddValue(noiseVal); // track min/max values for our terrain
 
-				// we want to scale moutains based on height of terrain (for the time being)
-				// higher terrain is more affected by the mountain noise
-				// want it to always be additive though, don't want to subtract from mountains
-				float normalizedH = h/(terrainSettings.noiseSettings.simpleNoiseSettings.depth + terrainSettings.noiseSettings.simpleNoiseSettings.detailHeight); // between 0 and 1
-
+				// index of the current point
 				int i = y + x * resolution;
-				Vector2 percent = new Vector2(x, y) / (resolution - 1);
-				float tHeight = h/resolution;
-				tHeight = (tHeight < sandZone ? 0 : tHeight); // move to terrainGenerator
-				elevationMinMax.AddValue(tHeight);
-				verticies[i] = new Vector3((percent.x - 0.5f) * 2, tHeight, (percent.y - 0.5f) * 2);
+				// set the vertex for our mesh
+				verticies[i] = new Vector3(point.x, noiseVal, point.y);
 
 				// create triangles for mesh
+				// triangles are created in clockwise pattern
 				if ( x != resolution - 1 && y != resolution - 1 ) {
-					triangles[triIndex] = i;
-					triangles[triIndex + 1] = i + resolution + 1;
-					triangles[triIndex + 2] = i + resolution;
+					triangles[triIndex] = i; // starting point
+					triangles[triIndex + 1] = i + resolution + 1; // point on the next row + 1
+					triangles[triIndex + 2] = i + resolution; 
 
 					triangles[triIndex + 3] = i;
 					triangles[triIndex + 4] = i + 1;
@@ -117,73 +115,7 @@ public class Terrain : MonoBehaviour {
 		mesh.RecalculateNormals();
 	}
 
-	//public void ConstructMeshOLD() {
-	//	Vector3[] verticies = new Vector3[resolution*resolution];
-	//	int[] triangles = new int[(resolution-1) * (resolution-1) * 6];
-	//	int triIndex = 0;
-
-	//	mesh = meshFilter.sharedMesh;
-
-	//	// noise for initial landmass
-	//	OpenSimplexNoise baseNoise = new OpenSimplexNoise(1);
-	//	// noise for adding more detail to landscape
-	//	OpenSimplexNoise detailNoise = new OpenSimplexNoise(2);
-	//	// noise for generating mountains
-	//	OpenSimplexNoise mountainNoise = new OpenSimplexNoise(3);
-
-	//	for ( int y = 0; y < resolution; y++ ) {
-	//		for ( int x = 0; x < resolution; x++ ) {
-	//			float noiseVal = (float)baseNoise.eval(x / S, y/ S)*depth;
-	//			float detVal = (float)detailNoise.eval(x/detailScale,y/detailScale)*detailHeight;
-
-	//			float h = noiseVal + detVal;
-
-	//			// we want to scale moutains based on height of terrain (for the time being)
-	//			// higher terrain is more affected by the mountain noise
-	//			// want it to always be additive though, don't want to subtract from mountains
-	//			float normalizedH = h/(depth + detailHeight); // between 0 and 1
-	//			float mountVal = (float)mountainNoise.eval(x/mountainScale,y/mountainScale) + 1; // between 0 and 2
-
-	//			// height at which terrain is mountain
-	//			if ( normalizedH > mountainZone ) {
-	//				float t = (normalizedH - mountainZone) / (1 - mountainZone); // how much to apply the mountain detail, from 1 to 2
-	//				h += t * mountVal * mountainHeight;
-	//			}
-
-	//			int i = y + x * resolution;
-	//			Vector2 percent = new Vector2(x, y) / (resolution - 1);
-	//			float tHeight = h/resolution;
-	//			tHeight = (tHeight < sandZone ? 0 : tHeight);
-	//			elevationMinMax.AddValue(tHeight);
-	//			verticies[i] = new Vector3((percent.x - 0.5f) * 2, tHeight, (percent.y - 0.5f) * 2);
-
-	//			// create triangles for mesh
-	//			if ( x != resolution - 1 && y != resolution - 1 ) {
-	//				//Debug.Log(triIndex);
-	//				triangles[triIndex] = i;
-	//				triangles[triIndex + 1] = i + resolution + 1;
-	//				triangles[triIndex + 2] = i + resolution;
-
-	//				triangles[triIndex + 3] = i;
-	//				triangles[triIndex + 4] = i + 1;
-	//				triangles[triIndex + 5] = i + 1 + resolution;
-
-	//				triIndex += 6;
-	//			}
-	//		}
-	//	}
-
-	//	// update color generator with new minmax values
-	//	colorGenerator.UpdateElevation(elevationMinMax);
-	//	colorGenerator.UpdateColors();
-
-	//	// update mesh with new triangles
-	//	mesh.Clear();
-	//	mesh.vertices = verticies;
-	//	mesh.triangles = triangles;
-	//	mesh.RecalculateNormals();
-	//}
-
+	// To be called when only color settings are updated
 	public void OnColorSettingsUpdated() {
 		if(autoUpdate){
 			Initialize();
@@ -192,6 +124,7 @@ public class Terrain : MonoBehaviour {
 		}
 	}
 
+	// To be called when only terrain gen settings are updated
 	public void OnTerrainSettingsUpdated() {
 		if(autoUpdate){
 			Initialize();

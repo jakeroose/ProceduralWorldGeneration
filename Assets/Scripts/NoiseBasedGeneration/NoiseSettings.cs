@@ -19,8 +19,8 @@ public class NoiseSettings {
 
 	[System.Serializable]
 	public class SimpleNoiseSettings {
-		public int width = 100, height = 100, depth = 10, mountainHeight = 2, detailHeight = 2;
-		public float scale = 12f, mountainScale = 5f;//, roughness = 5f;
+		//public int width = 100, height = 100, depth = 10, mountainHeight = 2, detailHeight = 2;
+		//public float scale = 12f, mountainScale = 5f;
 
 		public Vector2 center;
 
