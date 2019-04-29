@@ -14,10 +14,10 @@ using UnityEngine;
  */
 
 public class Terrain : MonoBehaviour {
-
+	public Vector2 center;
 	[Range(1,50)]
 	public int pointDensity = 10;
-	[Range(1, 20)]
+	[Range(1, 50)]
 	public int terrainSize = 3;
 	public bool autoUpdate = true;
 	public MinMax elevationMinMax;
@@ -80,7 +80,7 @@ public class Terrain : MonoBehaviour {
 				Vector2 point = new Vector2(x, y) / (float)pointDensity;
 
 				// noiseVal is the height value at our coordinate
-				float noiseVal = terrainGenerator.CalculatePointOnPlanet(point);
+				float noiseVal = terrainGenerator.CalculatePointOnPlanet(point + center);
 				elevationMinMax.AddValue(noiseVal); // track min/max values for our terrain
 
 				// index of the current point

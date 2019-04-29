@@ -11,64 +11,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f274feacdf50f34448f4adc0eb518dcd, type: 3}
   m_Name: terrain
   m_EditorClassIdentifier: 
-  noiseSettings:
-    filterType: 0
-    simpleNoiseSettings:
-      width: 100
-      height: 100
-      depth: -10
-      mountainHeight: 2
-      detailHeight: 37
-      scale: 12
-      mountainScale: 5
-      center: {x: 0, y: 0}
-      numLayers: 1
-      baseRoughness: 0.97
-      roughness: 0.05
-      strength: 3.21
-      persistence: 0.5
-    rigidNoiseSettings:
-      width: 100
-      height: 100
-      depth: 10
-      mountainHeight: 2
-      detailHeight: 2
-      scale: 12
-      mountainScale: 5
-      center: {x: 0, y: 0}
-      numLayers: 1
-      baseRoughness: 1
-      roughness: 0.05
-      strength: 2
-      persistence: 0.5
-      weightMultiplier: 0.5
+  minHeight: 0
   noiseLayers:
   - enabled: 1
     useFirstLayerAsMask: 1
     noiseSettings:
       filterType: 0
       simpleNoiseSettings:
-        width: 100
-        height: 85
-        depth: 10
-        mountainHeight: -7
-        detailHeight: 2
-        scale: 8.88
-        mountainScale: 2.4
-        center: {x: 10.31, y: -0.71}
+        center: {x: 13.15, y: -0.71}
         numLayers: 3
         baseRoughness: 0.107
         roughness: 1.8
         strength: 0.62
         persistence: 0.61
       rigidNoiseSettings:
-        width: 100
-        height: 100
-        depth: 10
-        mountainHeight: 2
-        detailHeight: 2
-        scale: 12
-        mountainScale: 5
         center: {x: 0, y: 0}
         numLayers: 1
         baseRoughness: 1
@@ -81,13 +37,6 @@ MonoBehaviour:
     noiseSettings:
       filterType: 0
       simpleNoiseSettings:
-        width: 100
-        height: 100
-        depth: 10
-        mountainHeight: 2
-        detailHeight: 2
-        scale: 12
-        mountainScale: 5
         center: {x: 0, y: 0}
         numLayers: 8
         baseRoughness: 0.153
@@ -95,13 +44,6 @@ MonoBehaviour:
         strength: 0.25
         persistence: 0.9
       rigidNoiseSettings:
-        width: 100
-        height: 100
-        depth: 10
-        mountainHeight: 2
-        detailHeight: 2
-        scale: 12
-        mountainScale: 5
         center: {x: 0, y: 0}
         numLayers: 1
         baseRoughness: 1
@@ -114,13 +56,6 @@ MonoBehaviour:
     noiseSettings:
       filterType: 1
       simpleNoiseSettings:
-        width: 100
-        height: 100
-        depth: 10
-        mountainHeight: 2
-        detailHeight: 2
-        scale: 12
-        mountainScale: 5
         center: {x: 0, y: 0}
         numLayers: 3
         baseRoughness: 0.035
@@ -128,13 +63,6 @@ MonoBehaviour:
         strength: 27.03
         persistence: 0.5
       rigidNoiseSettings:
-        width: 100
-        height: 100
-        depth: 10
-        mountainHeight: 2
-        detailHeight: 2
-        scale: 12
-        mountainScale: 5
         center: {x: 1.22, y: 0}
         numLayers: 4
         baseRoughness: 0.273
@@ -142,7 +70,3 @@ MonoBehaviour:
         strength: 2.42
         persistence: 0.65
         weightMultiplier: 1.4
-  mountainZone: 0.5
-  grassZone: 0.2
-  sandZone: 0
-  minHeight: -0.15

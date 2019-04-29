@@ -20,18 +20,20 @@ public class TerrainGenerator {
 
 	// Takes in a point and returns the elevation for that point
 	public float CalculatePointOnPlanet(Vector2 point){
-		float elevation = 0;
-		for(int i = 0; i < noiseFilters.Length; i++){
+		float baseLayer = noiseFilters[0].Evaluate(point); // save base layer in case used as mask
+		float elevation = settings.noiseLayers[0].enabled ? baseLayer : 0;
+
+		for (int i = 1; i < noiseFilters.Length; i++){
 			if(settings.noiseLayers[i].enabled){
-				if(settings.noiseLayers[i].useFirstLayerAsMask && i > 0){
-					// TODO: Optimize, don't need to calc noiseFilters[0] every loop.
-					elevation += noiseFilters[i].Evaluate(point) * noiseFilters[0].Evaluate(point);
+				if(settings.noiseLayers[i].useFirstLayerAsMask){
+					elevation += noiseFilters[i].Evaluate(point) * baseLayer;
 				}
 				else {
 					elevation += noiseFilters[i].Evaluate(point);
 				}
 			}
 		}
+		// Keep terrain at least minHeight specified in terrainSettings
 		elevation = Mathf.Max(elevation, settings.minHeight);
 		return elevation;
 	}
