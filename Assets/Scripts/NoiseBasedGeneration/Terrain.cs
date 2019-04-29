@@ -26,6 +26,7 @@ public class Terrain : MonoBehaviour {
 	public TerrainSettings terrainSettings;
 
 	// Used for editor scripting
+	// TODO: Don't update terrain when these values change
 	[HideInInspector]
 	public bool terrainSettingsFoldout;
 	[HideInInspector]
